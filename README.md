@@ -1,5 +1,22 @@
 # PCAT — Instrucciones de instalación
 
+## Hardware utilizado
+
+| Componente | Modelo | Descripción |
+|-----------|--------|-------------|
+| Microcontrolador | **NodeMCU ESP8266 v3 (CH340, USB-C)** | Vive dentro de la PC, conectado al header PWR_SW |
+| Bracket | **USB-C Panel Mount PCI** — [Ver en Amazon](https://www.amazon.com/-/es/gp/product/B0FNQV23MY/ref=ox_sc_act_title_1?smid=A1RW52PBGSRLMR&psc=1) | Expone el puerto USB-C del NodeMCU al exterior del chasis |
+| Carcasa | **NodeMCU ESP8266 Case** — [Descargar STL](./case.stl) | Case imprimible en 3D para montar el controlador |
+
+## Archivos del proyecto
+
+| Archivo | Dónde va | Descarga |
+|---------|----------|----------|
+| `pcat.py` | Tu PC — se compila a `PCAT.exe` | [Descargar pcat.py](./pcat.py) |
+| `autoexec.be` | NodeMCU ESP8266 — via Tasmota | [Descargar autoexec.be](./autoexec.be) |
+| `case.stl` | Impresora 3D | [Descargar case.stl](./case.stl) |
+
+---
 ## Paso 1: Compilar PCAT.exe
 
 Necesitas Python instalado en tu PC solo para compilar (no para correrlo).
@@ -53,7 +70,7 @@ New-NetFirewallRule -DisplayName "PCAT" -Direction Inbound -Protocol TCP -LocalP
 
 ## Paso 5: Sin configuración de router necesaria
 
-PCAT.exe se anuncia automáticamente en tu red como **`pcat.local`** via mDNS. El NodeMCU lo encuentra por ese nombre sin importar qué IP tenga tu PC ese día. No necesitas tocar el router.
+PCAT.exe se anuncia automáticamente en tu red como **`pcat.local`** via mDNS. El NodeMCU lo encuentra por ese nombre sin importar qué IP tenga tu PC ese día. No necesitas tocar el router ni saber la contraseña.
 
 El único requisito es que tu PC y el NodeMCU estén en la misma red WiFi.
 
@@ -66,7 +83,7 @@ El único requisito es que tu PC y el NodeMCU estén en la misma red WiFi.
 3. Entra al panel web de Tasmota → **Tools → Berry Scripting Console**
 4. Sube el archivo `autoexec.be`
 5. Edita las variables al inicio:
-   - `PC_IP`    → IP fija de tu PC
+   - `PC_HOST`  → déjalo como `pcat.local` (no necesitas cambiarlo)
    - `PC_TOKEN` → mismo token que pusiste en pcat.py
 
 ---
