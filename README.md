@@ -1,9 +1,14 @@
 # PCAT — PC Agent Tool
 
-Este es un pequeño proyecto con un arduino el cual su trabajo es Encerder, apagar y reiniciar de manera segura la PC.
-Esto solo para conectarlo con Alexa y asi poder darle indicaciones por voz y que ejecute una accion y optimizar/atomatizar mi habitacion.
+Este es un pequeño proyecto con un arduino donde su tarea principal es encender y apagar la PC de manera remota sin tener que tocar la PC.
+Pero este proyecto es y sera mucho mas grande que eso. Ahora esta enfocado en ser un agente de ejecucion en tu PC.
 
-Naaaa realmente me da pereza enceder y apagar la PC cuando estoy acostado...
+Es decir podra ejecutar Apps de la PC mediante el comando de voz que elijas o desde la PC. Imaginate todo lo que puedes automatizar con este siemple proyecto.
+
+Te pongo un caso de uso:
+LLego a mi casa cansado y habia dejado un Anime o serie por la mitad. Seria tan facil como decirle "Alexa quier ver anime" y con los controladores smart que tienes en esa habitacion ella apaga la luz, encienda el aire, Encienda la PC, habra crunchyroll y suba el volumen de la PC todo esto con un solo comando de Voz.
+
+PCAT es tener un agente propio local en tu PC el cual esta a la espera de ejecutar funciones que declares o de las que ya estan declaradas por defecto.
 
 ## Hardware utilizado
 
