@@ -24,7 +24,7 @@ PCAT es tener un agente propio local en tu PC, el cual está a la espera de ejec
 |---------|----------|----------|
 | `pcat.py` | Tu PC — se compila a `PCAT.exe` | [Descargar pcat.py](./pcat.py) |
 | `autoexec.be` | NodeMCU ESP8266 — via Tasmota | [Descargar autoexec.be](./autoexec.be) |
-| `case.stl` | Impresora 3D | [Descargar case.stl](./case.stl) |
+| `case.stl` | Impresora 3D | [Descargar case.stl](./esp8266-box.stl) |
 
 ---
 ## Paso 1: Compilar PCAT.exe
