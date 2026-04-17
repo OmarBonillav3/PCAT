@@ -1,4 +1,4 @@
-# PCAT — Instrucciones de instalación
+# PCAT — PC Agent Tool
 
 ## Hardware utilizado
 
