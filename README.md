@@ -1,14 +1,14 @@
 # PCAT — PC Agent Tool
 
-Este es un pequeño proyecto con un arduino donde su tarea principal es encender y apagar la PC de manera remota sin tener que tocar la PC.
-Pero este proyecto es y sera mucho mas grande que eso. Ahora esta enfocado en ser un agente de ejecucion en tu PC.
+Este es un pequeño proyecto con un Arduino donde su tarea principal es encender y apagar la PC de manera remota sin tener que tocarla.
+Pero este proyecto es y será mucho más grande que eso. Ahora está enfocado en ser un agente de ejecución en tu PC.
 
-Es decir podra ejecutar Apps de la PC mediante el comando de voz que elijas o desde la PC. Imaginate todo lo que puedes automatizar con este siemple proyecto.
+Es decir, podrá ejecutar apps de la PC mediante el comando de voz que elijas o desde la app. Imagínate todo lo que puedes automatizar con este simple proyecto.
 
 Te pongo un caso de uso:
-LLego a mi casa cansado y habia dejado un Anime o serie por la mitad. Seria tan facil como decirle "Alexa quier ver anime" y con los controladores smart que tienes en esa habitacion ella apaga la luz, encienda el aire, Encienda la PC, habra crunchyroll y suba el volumen de la PC todo esto con un solo comando de Voz.
+Llegué a mi casa cansado y había dejado un anime o serie por la mitad. Sería tan fácil como decirle "Alexa, quiero ver anime" y con los controles smart que tienes en esa habitación, ella apaga la luz, enciende el aire, enciende la PC, abre Crunchyroll y sube el volumen, todo esto con un solo comando de voz.
 
-PCAT es tener un agente propio local en tu PC el cual esta a la espera de ejecutar funciones que declares o de las que ya estan declaradas por defecto.
+PCAT es tener un agente propio local en tu PC, el cual está a la espera de ejecutar las funciones que declares o las que ya están declaradas por defecto.
 
 ## Hardware utilizado
 
