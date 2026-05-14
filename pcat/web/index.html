@@ -1,0 +1,886 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>PCAT · Config</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --paper:    #f6f4ef;
+    --paper-2:  #ece8de;
+    --paper-3:  #f5d0c5;
+    --ink:      #1a1816;
+    --ink-2:    #3a3530;
+    --muted:    #8a847a;
+    --accent:   #e85d3a;
+    --accent-2: #c44a2a;
+    --surface:  #1a1816;
+    --line:     rgba(26,24,22,0.12);
+    --line-2:   rgba(26,24,22,0.24);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { min-height: 100vh; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: 15px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap { max-width: 1060px; margin: 0 auto; padding: 0 40px; }
+
+  /* ── NAV ── */
+  nav {
+    position: sticky; top: 0; z-index: 50;
+    background: var(--paper);
+    border-bottom: 1px solid var(--line);
+  }
+  nav .row {
+    display: flex; align-items: center;
+    justify-content: space-between;
+    padding: 16px 0;
+    gap: 16px;
+  }
+  nav .brand { display: flex; align-items: center; gap: 14px; }
+  nav .brand b {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700; font-size: 15px; letter-spacing: -0.01em;
+  }
+  .pill {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; padding: 4px 10px;
+    border: 1px solid var(--line-2);
+    border-radius: 999px; color: var(--muted);
+  }
+
+  #status-badge {
+    display: flex; align-items: center; gap: 8px;
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    letter-spacing: 0.04em; color: var(--muted);
+    cursor: pointer; border: none; background: none;
+    padding: 6px 12px; border: 1px solid var(--line);
+    border-radius: 999px; transition: border-color .2s, color .2s;
+  }
+  #status-badge:hover { border-color: var(--line-2); color: var(--ink); }
+  #status-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--muted); flex-shrink: 0;
+    transition: background .4s, box-shadow .4s;
+  }
+  #status-dot.online  { background: #5c9e6e; box-shadow: 0 0 7px #5c9e6e; }
+  #status-dot.offline { background: var(--accent); box-shadow: 0 0 7px var(--accent); }
+
+  /* ── SECTIONS ── */
+  .block {
+    padding: 64px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .block:last-child { border-bottom: none; }
+
+  .sec-head {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 48px;
+    margin-bottom: 48px;
+    align-items: baseline;
+  }
+  .sec-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; letter-spacing: 0.22em;
+    text-transform: uppercase; color: var(--muted);
+    padding-top: 10px;
+  }
+  .sec-head h2 {
+    font-family: 'Instrument Serif', serif;
+    font-weight: 400; font-size: clamp(32px, 4vw, 48px);
+    line-height: 1.08; letter-spacing: -0.01em;
+  }
+  .sec-head h2 em { color: var(--accent); font-style: italic; }
+
+  /* ── STATUS PANEL ── */
+  #status-block { display: none; padding-top: 0; }
+  #status-block.visible { display: block; }
+  #status-block .block { padding-top: 48px; }
+
+  .stat-grid {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 48px;
+  }
+  .stat-items {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 24px 32px;
+  }
+  .stat-item { display: flex; flex-direction: column; gap: 4px; }
+  .stat-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; letter-spacing: 0.22em;
+    text-transform: uppercase; color: var(--muted);
+  }
+  .stat-value {
+    font-family: 'Instrument Serif', serif;
+    font-size: 26px; line-height: 1.1; color: var(--ink);
+  }
+
+  /* ── ADD FORM ── */
+  .form-layout {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 48px;
+  }
+  .form-left {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; letter-spacing: 0.22em;
+    text-transform: uppercase; color: var(--muted);
+    padding-top: 4px;
+  }
+  .form-left .ix {
+    font-family: 'Instrument Serif', serif;
+    font-size: 72px; line-height: 1; color: var(--accent);
+    letter-spacing: normal; text-transform: none;
+    display: block; margin-bottom: 8px;
+  }
+
+  .fields {
+    display: grid;
+    grid-template-columns: 1fr 1.8fr 1fr;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  @media (max-width: 680px) { .fields { grid-template-columns: 1fr; } }
+
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--muted);
+  }
+  input, select {
+    background: var(--paper-2);
+    border: 1px solid var(--line-2);
+    border-radius: 6px;
+    color: var(--ink);
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: 14px;
+    padding: 9px 12px;
+    outline: none;
+    transition: border-color .2s, background .2s;
+    width: 100%;
+  }
+  input:focus, select:focus {
+    border-color: var(--ink); background: var(--paper);
+  }
+  input::placeholder { color: var(--muted); }
+  select option { background: var(--paper); }
+
+  .form-actions { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+
+  /* ── BUTTONS ── */
+  .btn {
+    display: inline-flex; align-items: center; gap: 7px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; letter-spacing: 0.04em;
+    font-weight: 500; border-radius: 999px;
+    padding: 9px 20px; cursor: pointer;
+    border: 1px solid transparent;
+    transition: background .15s, color .15s, border-color .15s, opacity .15s;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .btn:hover   { opacity: .88; }
+  .btn:active  { transform: scale(.97); }
+  .btn:disabled { opacity: .4; cursor: not-allowed; pointer-events: none; }
+
+  .btn-ink {
+    background: var(--ink); color: var(--paper);
+    border-color: var(--ink);
+  }
+  .btn-ink:hover { background: var(--ink-2); border-color: var(--ink-2); opacity: 1; }
+
+  .btn-ghost {
+    background: transparent; color: var(--ink);
+    border-color: var(--line-2);
+  }
+  .btn-ghost:hover { border-color: var(--ink); opacity: 1; }
+
+  .btn-accent {
+    background: var(--accent); color: var(--paper);
+    border-color: var(--accent);
+  }
+  .btn-accent:hover { background: var(--accent-2); border-color: var(--accent-2); opacity: 1; }
+
+  .btn-sm { padding: 6px 14px; font-size: 11px; }
+
+  #add-error {
+    font-size: 12px; color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+    display: none;
+  }
+
+  /* ── SCRIPT LIST ── */
+  .scripts-layout {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 48px;
+  }
+  .scripts-left {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; letter-spacing: 0.22em;
+    text-transform: uppercase; color: var(--muted);
+    padding-top: 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: flex-start;
+  }
+  #script-count {
+    font-family: 'Instrument Serif', serif;
+    font-size: 64px; line-height: 1; color: var(--ink);
+    letter-spacing: normal; text-transform: none;
+  }
+
+  #scripts-list { display: flex; flex-direction: column; }
+
+  .script-row {
+    display: grid;
+    grid-template-columns: auto 1fr auto auto;
+    gap: 24px;
+    padding: 20px 0;
+    border-top: 1px solid var(--line);
+    align-items: center;
+  }
+  .script-row:last-child { border-bottom: 1px solid var(--line); }
+  .script-row:hover { background: none; }
+
+  .type-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--muted);
+    background: var(--paper-2);
+    border: 1px solid var(--line-2);
+    border-radius: 999px; padding: 3px 10px;
+    flex-shrink: 0;
+  }
+  .type-badge.ps  { background: var(--paper-3); color: var(--accent-2); border-color: rgba(200,70,40,.2); }
+  .type-badge.bat { background: #eeeadf; color: #7a6030; border-color: rgba(120,90,40,.2); }
+  .type-badge.py  { background: #e8eedf; color: #3a6030; border-color: rgba(60,100,50,.2); }
+  .type-badge.exe { background: #e8e5ee; color: #503870; border-color: rgba(80,55,110,.2); }
+
+  .script-info { min-width: 0; }
+  .script-name {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600; font-size: 16px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .script-path {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; color: var(--muted);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    margin-top: 3px;
+  }
+  .script-id {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; color: var(--accent);
+    letter-spacing: 0.04em; text-transform: uppercase;
+    margin-top: 2px;
+  }
+  .script-actions { display: flex; gap: 8px; flex-shrink: 0; }
+
+  /* ── EMPTY STATE ── */
+  .empty {
+    padding: 56px 0 40px;
+    display: flex; flex-direction: column; align-items: flex-start; gap: 16px;
+  }
+  .empty-cat { opacity: .18; }
+  .empty p {
+    font-family: 'Instrument Serif', serif;
+    font-size: 28px; color: var(--ink-2); font-style: italic;
+  }
+  .empty span {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--muted);
+  }
+
+  /* ── OUTPUT PANEL ── */
+  #output-block { display: none; }
+  #output-block.visible { display: block; }
+  #output-block .block { background: var(--surface); padding-top: 0; border-bottom: none; }
+
+  .output-inner {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 48px;
+    padding: 48px 0;
+  }
+
+  .output-left {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: rgba(246,244,239,0.35);
+    padding-top: 4px;
+  }
+  .output-left .ix {
+    font-family: 'Instrument Serif', serif;
+    font-size: 64px; line-height: 1;
+    letter-spacing: normal; text-transform: none;
+    color: rgba(246,244,239,0.15);
+    display: block; margin-bottom: 8px;
+  }
+
+  .api-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .api-head {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 22px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .api-dots { display: flex; gap: 6px; }
+  .api-dots i {
+    width: 10px; height: 10px; border-radius: 50%;
+    display: inline-block; background: rgba(255,255,255,0.12);
+  }
+  .api-dots i:first-child { background: var(--accent); }
+  .api-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; letter-spacing: 0.18em;
+    text-transform: uppercase; color: rgba(255,255,255,0.4);
+    margin-left: 6px;
+    flex: 1;
+  }
+  #output-rc {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; letter-spacing: 0.1em;
+    padding: 3px 10px; border-radius: 999px;
+    display: none;
+  }
+  #output-rc.ok  { display: inline-block; background: rgba(92,158,110,.15); color: #7ec490; }
+  #output-rc.err { display: inline-block; background: rgba(232,93,58,.15);  color: var(--accent); }
+
+  .console {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px; line-height: 1.7;
+    padding: 22px 26px;
+    color: #c8c2b8;
+    white-space: pre-wrap;
+    word-break: break-all;
+    max-height: 360px;
+    overflow-y: auto;
+  }
+  .console .err  { color: var(--accent); }
+  .console .dim  { color: rgba(200,194,184,.4); font-style: italic; }
+
+  .output-close {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: rgba(246,244,239,0.35);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 999px; padding: 5px 14px;
+    background: none; cursor: pointer;
+    transition: border-color .2s, color .2s;
+  }
+  .output-close:hover { border-color: rgba(255,255,255,0.25); color: rgba(246,244,239,0.7); }
+
+  /* ── SPINNER ── */
+  .spin {
+    width: 12px; height: 12px;
+    border: 2px solid rgba(26,24,22,.2);
+    border-top-color: var(--ink);
+    border-radius: 50%;
+    animation: rot .6s linear infinite;
+    display: inline-block;
+  }
+  .spin.light { border-color: rgba(246,244,239,.2); border-top-color: var(--paper); }
+  @keyframes rot { to { transform: rotate(360deg); } }
+
+  /* ── TOAST ── */
+  #toast {
+    position: fixed; bottom: 24px; left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--surface); color: var(--paper);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; letter-spacing: 0.04em;
+    padding: 10px 20px; border-radius: 999px;
+    box-shadow: 0 8px 32px rgba(0,0,0,.35);
+    transition: transform .3s, opacity .3s;
+    opacity: 0; z-index: 200; white-space: nowrap;
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  #toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+  #toast.err  { background: var(--accent); }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--surface); color: var(--paper);
+    padding: 56px 0 48px;
+    border-top: none;
+  }
+  footer .row {
+    display: flex; align-items: flex-end;
+    justify-content: space-between; gap: 32px;
+  }
+  footer .meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; letter-spacing: 0.06em;
+    color: rgba(230,226,216,.45);
+    line-height: 1.8;
+  }
+  footer .meta b { color: var(--paper); font-weight: 500; }
+  footer .big {
+    font-family: 'Instrument Serif', serif;
+    font-size: clamp(40px, 7vw, 88px);
+    line-height: 0.92; letter-spacing: -0.02em;
+    color: rgba(246,244,239,.08);
+    user-select: none;
+  }
+  footer .big em { color: var(--accent); opacity: .35; font-style: italic; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 760px) {
+    .wrap { padding: 0 20px; }
+    .sec-head, .form-layout, .scripts-layout, .stat-grid, .output-inner {
+      grid-template-columns: 1fr; gap: 20px;
+    }
+    .sec-head { margin-bottom: 28px; }
+    .block { padding: 40px 0; }
+    .script-row { grid-template-columns: auto 1fr; gap: 12px; }
+    .script-actions { grid-column: 1 / -1; }
+    footer .big { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav>
+  <div class="wrap row">
+    <div class="brand">
+      <!-- parentCat -->
+      <svg width="32" height="29" viewBox="0 0 220 200" fill="none"
+           stroke="var(--ink)" stroke-width="14"
+           stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="55,64 76,22 97,64" />
+        <polyline points="123,64 144,22 165,64" />
+        <path d="M 55 64 Q 22 112 55 162" />
+        <path d="M 165 64 Q 198 112 165 162" />
+        <circle cx="110" cy="118" r="7" fill="var(--accent)" stroke="none"/>
+        <polyline points="92,142 100,154 110,142 120,154 128,142" stroke-width="8" />
+      </svg>
+      <b>PCAT</b>
+      <span class="pill">Agent · v0.1</span>
+    </div>
+    <button id="status-badge" onclick="toggleStatus()">
+      <span id="status-dot"></span>
+      <span id="status-text">checking…</span>
+    </button>
+  </div>
+</nav>
+
+<!-- ── STATUS DETAILS ── -->
+<div id="status-block">
+  <div class="block" style="border-top: 1px solid var(--line);">
+    <div class="wrap">
+      <div class="stat-grid">
+        <div class="sec-num" style="padding-top:0;">System<br/>Status</div>
+        <div class="stat-items" id="stat-items">
+          <div class="stat-item">
+            <span class="stat-label">Loading</span>
+            <span class="stat-value">…</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── ADD SCRIPT ── -->
+<section class="block">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-num">01 — Register</div>
+      <h2>Add a <em>script.</em></h2>
+    </div>
+    <div class="form-layout">
+      <div class="form-left">
+        <span class="ix">+</span>
+        New entry
+      </div>
+      <form id="add-form" onsubmit="addScript(event)">
+        <div class="fields">
+          <div class="field">
+            <label for="f-name">Name</label>
+            <input id="f-name" placeholder="Backup DB" required />
+          </div>
+          <div class="field">
+            <label for="f-path">Absolute Path</label>
+            <input id="f-path" placeholder="C:\Scripts\backup.ps1" required />
+          </div>
+          <div class="field">
+            <label for="f-type">Type</label>
+            <select id="f-type">
+              <option value="powershell">PowerShell</option>
+              <option value="bat">Batch · .bat</option>
+              <option value="python">Python</option>
+              <option value="exe">Executable</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-ink" id="add-btn">
+            Add Script
+          </button>
+          <span id="add-error"></span>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ── SCRIPT LIST ── -->
+<section class="block">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-num">02 — Registry</div>
+      <h2>Registered <em>scripts.</em></h2>
+    </div>
+    <div class="scripts-layout">
+      <div class="scripts-left">
+        <span id="script-count">0</span>
+        scripts
+        <button class="btn btn-ghost btn-sm" onclick="loadScripts()" style="margin-top:4px;">Refresh</button>
+      </div>
+      <div id="scripts-list">
+        <div class="empty">
+          <svg class="empty-cat" width="80" height="72" viewBox="0 0 220 200" fill="none"
+               stroke="var(--ink)" stroke-width="14"
+               stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="55,64 76,22 97,64" />
+            <polyline points="123,64 144,22 165,64" />
+            <path d="M 55 64 Q 22 112 55 162" />
+            <path d="M 165 64 Q 198 112 165 162" />
+            <circle cx="110" cy="118" r="7" fill="var(--ink)" stroke="none"/>
+            <polyline points="92,142 100,154 110,142 120,154 128,142" stroke-width="8" />
+          </svg>
+          <p>Nothing here yet.</p>
+          <span>Add a script above to get started</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── OUTPUT PANEL (dark) ── -->
+<div id="output-block">
+  <div style="background: var(--surface);">
+    <div class="wrap">
+      <div class="output-inner">
+        <div class="output-left">
+          <span class="ix">▶</span>
+          Output
+        </div>
+        <div>
+          <div class="api-card">
+            <div class="api-head">
+              <span class="api-dots"><i></i><i></i><i></i></span>
+              <span class="api-label" id="output-label">executing…</span>
+              <span id="output-rc"></span>
+              <button class="output-close"
+                      onclick="document.getElementById('output-block').classList.remove('visible')">
+                close
+              </button>
+            </div>
+            <div class="console" id="output-console">
+              <span class="dim">waiting…</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="wrap row">
+    <div>
+      <svg width="48" height="43" viewBox="0 0 220 200" fill="none"
+           stroke="rgba(246,244,239,0.25)" stroke-width="14"
+           stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="55,64 76,22 97,64" />
+        <polyline points="123,64 144,22 165,64" />
+        <path d="M 55 64 Q 22 112 55 162" />
+        <path d="M 165 64 Q 198 112 165 162" />
+        <circle cx="110" cy="118" r="7" fill="var(--accent)" stroke="none" opacity=".5"/>
+        <polyline points="92,142 100,154 110,142 120,154 128,142" stroke-width="8" />
+      </svg>
+      <div class="meta" style="margin-top: 18px;">
+        <div><b>PCAT</b> — PC Automation &amp; Control</div>
+        <div>v0.1 · alpha · 2026</div>
+        <div>localhost:8080</div>
+      </div>
+    </div>
+    <p class="big">Your PC,<br/>your <em>agent.</em></p>
+  </div>
+</footer>
+
+<div id="toast"></div>
+
+<script>
+  // ── boot ──────────────────────────────────────────────────────────────────
+  document.addEventListener('DOMContentLoaded', () => {
+    loadStatus(false);
+    loadScripts();
+  });
+
+  // ── status ────────────────────────────────────────────────────────────────
+  let statusOpen = false;
+
+  function toggleStatus() {
+    statusOpen = !statusOpen;
+    const block = document.getElementById('status-block');
+    if (statusOpen) {
+      block.classList.add('visible');
+      loadStatus(true);
+    } else {
+      block.classList.remove('visible');
+    }
+  }
+
+  async function loadStatus(showPanel) {
+    try {
+      const r = await fetch('/status');
+      const d = await r.json();
+      setOnline(true, d.hostname);
+      if (showPanel) renderStats(d);
+    } catch {
+      setOnline(false);
+    }
+  }
+
+  function renderStats(d) {
+    const items = [
+      ['Hostname',      d.hostname],
+      ['Platform',      d.platform],
+      ['Python',        d.python_version],
+      ['Agent Uptime',  fmt(d.agent_uptime_seconds)],
+      ['System Uptime', d.system_uptime_seconds != null ? fmt(d.system_uptime_seconds) : 'N/A'],
+      ['Status',        d.status],
+    ];
+    document.getElementById('stat-items').innerHTML = items.map(([k, v]) => `
+      <div class="stat-item">
+        <span class="stat-label">${k}</span>
+        <span class="stat-value">${v}</span>
+      </div>
+    `).join('');
+  }
+
+  function setOnline(on, hostname) {
+    document.getElementById('status-dot').className = on ? 'online' : 'offline';
+    document.getElementById('status-text').textContent = on
+      ? (hostname || 'online') : 'offline';
+  }
+
+  function fmt(s) {
+    const d = Math.floor(s / 86400), h = Math.floor(s % 86400 / 3600),
+          m = Math.floor(s % 3600 / 60), ss = s % 60;
+    if (d > 0) return `${d}d ${h}h`;
+    if (h > 0) return `${h}h ${m}m`;
+    if (m > 0) return `${m}m ${ss}s`;
+    return `${ss}s`;
+  }
+
+  // ── scripts ───────────────────────────────────────────────────────────────
+  async function loadScripts() {
+    try {
+      const r = await fetch('/scripts');
+      const scripts = await r.json();
+      renderScripts(scripts);
+      setOnline(true);
+    } catch {
+      setOnline(false);
+      document.getElementById('scripts-list').innerHTML = `
+        <div class="empty">
+          <p style="color:var(--accent)">Can't reach the agent.</p>
+          <span>Make sure pcat_agent.py is running</span>
+        </div>`;
+      document.getElementById('script-count').textContent = '—';
+    }
+  }
+
+  function renderScripts(scripts) {
+    document.getElementById('script-count').textContent = scripts.length;
+    const list = document.getElementById('scripts-list');
+
+    if (!scripts.length) {
+      list.innerHTML = `
+        <div class="empty">
+          <svg class="empty-cat" width="80" height="72" viewBox="0 0 220 200" fill="none"
+               stroke="var(--ink)" stroke-width="14"
+               stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="55,64 76,22 97,64"/>
+            <polyline points="123,64 144,22 165,64"/>
+            <path d="M 55 64 Q 22 112 55 162"/>
+            <path d="M 165 64 Q 198 112 165 162"/>
+            <circle cx="110" cy="118" r="7" fill="var(--ink)" stroke="none"/>
+            <polyline points="92,142 100,154 110,142 120,154 128,142" stroke-width="8"/>
+          </svg>
+          <p>Nothing here yet.</p>
+          <span>Add a script above to get started</span>
+        </div>`;
+      return;
+    }
+
+    const typeCls = { powershell:'ps', bat:'bat', python:'py', exe:'exe' };
+
+    list.innerHTML = scripts.map(s => `
+      <div class="script-row" id="row-${s.id}">
+        <span class="type-badge ${typeCls[s.type] || ''}">${s.type}</span>
+        <div class="script-info">
+          <div class="script-name">${esc(s.name)}</div>
+          <div class="script-path" title="${esc(s.path)}">${esc(s.path)}</div>
+          <div class="script-id">${esc(s.id)}</div>
+        </div>
+        <div class="script-actions">
+          <button class="btn btn-accent btn-sm"
+                  onclick="runScript('${s.id}','${esc(s.name)}',this)">
+            ▶ Run
+          </button>
+          <button class="btn btn-ghost btn-sm"
+                  onclick="deleteScript('${s.id}','${esc(s.name)}',this)">
+            Remove
+          </button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // ── add ───────────────────────────────────────────────────────────────────
+  async function addScript(e) {
+    e.preventDefault();
+    const btn = document.getElementById('add-btn');
+    const err = document.getElementById('add-error');
+    err.style.display = 'none';
+
+    const payload = {
+      name: document.getElementById('f-name').value.trim(),
+      path: document.getElementById('f-path').value.trim(),
+      type: document.getElementById('f-type').value,
+    };
+
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spin"></span> Adding…';
+
+    try {
+      const r = await fetch('/scripts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const d = await r.json();
+      if (!r.ok) throw new Error(d.error || r.statusText);
+      document.getElementById('add-form').reset();
+      await loadScripts();
+      toast(`"${d.name}" registered as ${d.id}`);
+    } catch (ex) {
+      err.textContent = ex.message;
+      err.style.display = 'inline';
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = 'Add Script';
+    }
+  }
+
+  // ── delete ────────────────────────────────────────────────────────────────
+  async function deleteScript(id, name, btn) {
+    if (!confirm(`Remove "${name}"?`)) return;
+    btn.disabled = true;
+    try {
+      const r = await fetch(`/scripts/${id}`, { method: 'DELETE' });
+      if (!r.ok) throw new Error(r.statusText);
+      document.getElementById(`row-${id}`)?.remove();
+      const list = document.getElementById('scripts-list');
+      if (!list.querySelector('.script-row')) renderScripts([]);
+      const cur = parseInt(document.getElementById('script-count').textContent) || 0;
+      document.getElementById('script-count').textContent = Math.max(0, cur - 1);
+      toast(`"${name}" removed`);
+    } catch (ex) {
+      toast(ex.message, true);
+      btn.disabled = false;
+    }
+  }
+
+  // ── run ───────────────────────────────────────────────────────────────────
+  async function runScript(id, name, btn) {
+    const block   = document.getElementById('output-block');
+    const console_ = document.getElementById('output-console');
+    const label   = document.getElementById('output-label');
+    const rc      = document.getElementById('output-rc');
+
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spin light"></span>';
+
+    label.textContent = `${name} · executing…`;
+    rc.className = ''; rc.textContent = '';
+    console_.innerHTML = '<span class="dim">running…</span>';
+    block.classList.add('visible');
+    block.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    try {
+      const r  = await fetch(`/execute/${id}`, { method: 'POST' });
+      const d  = await r.json();
+
+      if (!r.ok) {
+        console_.innerHTML = `<span class="err">${esc(d.error || r.statusText)}</span>`;
+        rc.className = 'err'; rc.textContent = 'error';
+      } else {
+        const out = d.stdout?.trim(), err = d.stderr?.trim();
+        const lines = [];
+        if (out) lines.push(esc(out));
+        if (err) lines.push(`<span class="err">${esc(err)}</span>`);
+        if (!out && !err) lines.push('<span class="dim">(no output)</span>');
+        console_.innerHTML = lines.join('\n');
+        label.textContent = `${name} · done`;
+        rc.className = d.returncode === 0 ? 'ok' : 'err';
+        rc.textContent = `exit ${d.returncode}`;
+      }
+    } catch (ex) {
+      console_.innerHTML = `<span class="err">${esc(ex.message)}</span>`;
+      rc.className = 'err'; rc.textContent = 'error';
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = '▶ Run';
+    }
+  }
+
+  // ── utils ─────────────────────────────────────────────────────────────────
+  function esc(s) {
+    return String(s ?? '')
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+      .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  let toastT;
+  function toast(msg, isErr = false) {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.className = `show${isErr ? ' err' : ''}`;
+    clearTimeout(toastT);
+    toastT = setTimeout(() => el.className = '', 3200);
+  }
+</script>
+</body>
+</html>
